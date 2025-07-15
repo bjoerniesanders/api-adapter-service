@@ -1,0 +1,14 @@
+# Root Endpoint - API Adapter Service
+# ===================================
+
+# Welcome endpoint with service information
+get_root:
+  method: GET
+  url: "http://localhost:3000/"
+  headers:
+    Accept: "application/json"
+  description: "Welcome endpoint with service information"
+  expected_response:
+    message: "Welcome to the API Adapter Service"
+    version: "1.0.0"
+    documentation: "/docs" 

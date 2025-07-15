@@ -1,0 +1,23 @@
+{
+  "supportsES6": true,
+  "npmName": "@api-adapter/generated-client",
+  "npmVersion": "1.0.0",
+  "npmRepository": "https://github.com/your-org/api-adapter-service",
+  "withInterfaces": true,
+  "typescriptThreePlus": true,
+  "nullSafe": true,
+  "stringEnums": true,
+  "enumPropertyNaming": "UPPERCASE",
+  "modelPropertyNaming": "camelCase",
+  "apiPackage": "api",
+  "modelPackage": "models",
+  "additionalProperties": {
+    "supportsES6": true,
+    "npmName": "@api-adapter/generated-client",
+    "npmVersion": "1.0.0",
+    "withInterfaces": true,
+    "typescriptThreePlus": true,
+    "nullSafe": true,
+    "stringEnums": true
+  }
+} 

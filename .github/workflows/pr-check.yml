@@ -1,0 +1,227 @@
+name: Pull Request Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  pull_request_target:
+    branches: [ main, develop ]
+
+env:
+  NODE_VERSION: '24.x'
+
+jobs:
+  # Schnelle Checks für PRs
+  quick-check:
+    name: Quick Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run ESLint
+        run: npm run lint
+        
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+        
+      - name: Run unit tests
+        run: npm test
+        
+      - name: Check for security vulnerabilities
+        run: npm audit --audit-level=high
+
+  # Code Coverage Check
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run tests with coverage
+        run: npm run test:coverage
+        
+      - name: Check coverage threshold
+        run: |
+          # Check if coverage meets minimum threshold
+          COVERAGE=$(npm run test:coverage -- --coverageReporters=text --coverageReporters=lcov | grep -o 'All files[^%]*' | grep -o '[0-9]*\.[0-9]*')
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "❌ Coverage is below 80%: $COVERAGE%"
+            exit 1
+          else
+            echo "✅ Coverage is above 80%: $COVERAGE%"
+          fi
+
+  # Build Check
+  build-check:
+    name: Build Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build application
+        run: npm run build
+        
+      - name: Verify build output
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ Build output directory 'dist' not found"
+            exit 1
+          fi
+          echo "✅ Build completed successfully"
+
+  # API Schema Validation
+  schema-validation:
+    name: API Schema Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Validate OpenAPI schemas
+        run: |
+          # Check if all OpenAPI files are valid JSON/YAML
+          for file in api/**/*.yaml api/**/*.yml api/**/*.json; do
+            if [ -f "$file" ]; then
+              echo "Validating $file..."
+              if [[ "$file" == *.json ]]; then
+                jq empty "$file"
+              else
+                python3 -c "import yaml; yaml.safe_load(open('$file'))"
+              fi
+            fi
+          done
+          echo "✅ All OpenAPI schemas are valid"
+
+  # Dependency Check
+  dependency-check:
+    name: Dependency Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check for outdated dependencies
+        run: npm outdated || echo "All dependencies are up to date"
+        
+      - name: Check for unused dependencies
+        run: npx depcheck || echo "No unused dependencies found"
+        
+      - name: Check for duplicate dependencies
+        run: npx npm-check-duplicates || echo "No duplicate dependencies found"
+
+  # Comment PR Status
+  pr-comment:
+    name: Comment PR Status
+    runs-on: ubuntu-latest
+    needs: [quick-check, coverage, build-check, schema-validation, dependency-check]
+    if: always()
+    
+    steps:
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('## PR Check Results')
+            );
+            
+            const results = {
+              'Quick Checks': needs.quick-check.result,
+              'Code Coverage': needs.coverage.result,
+              'Build Check': needs.build-check.result,
+              'Schema Validation': needs.schema-validation.result,
+              'Dependency Check': needs.dependency-check.result
+            };
+            
+            const statusEmoji = (status) => {
+              switch (status) {
+                case 'success': return '✅';
+                case 'failure': return '❌';
+                case 'cancelled': return '⚠️';
+                default: return '⏳';
+              }
+            };
+            
+            const body = `## PR Check Results
+            
+            ${Object.entries(results).map(([check, result]) => 
+              `${statusEmoji(result)} **${check}**: ${result}`
+            ).join('\n')}
+            
+            ---
+            *This comment was automatically generated by GitHub Actions*`;
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                comment_id: botComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } 

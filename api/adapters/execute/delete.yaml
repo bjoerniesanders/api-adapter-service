@@ -1,0 +1,85 @@
+# DELETE Requests via Adapter - API Adapter Service
+# ================================================
+
+# Simple DELETE request
+post_execute_adapter_delete_simple:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "DELETE"
+      url: "/users/123"
+      headers:
+        Accept: "application/json"
+  description: "Simple DELETE request via an adapter"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# DELETE request with confirmation
+post_execute_adapter_delete_with_confirmation:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "DELETE"
+      url: "/users/123"
+      headers:
+        Accept: "application/json"
+        "X-Confirmation": "true"
+        "X-Reason": "User requested deletion"
+      body:
+        reason: "User requested account deletion"
+        permanent: true
+        backup_data: false
+  description: "DELETE request with confirmation and reason"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# DELETE request with conditions
+post_execute_adapter_delete_conditional:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "DELETE"
+      url: "/users/123"
+      headers:
+        Accept: "application/json"
+        "If-Match": "etag-12345"
+        "If-Unmodified-Since": "Wed, 15 Jan 2024 12:00:00 GMT"
+      body:
+        cascade: true
+        delete_related:
+          - "posts"
+          - "comments"
+          - "sessions"
+  description: "DELETE request with conditions and cascade options"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601" 

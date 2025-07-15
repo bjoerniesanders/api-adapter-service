@@ -1,0 +1,103 @@
+# POST Requests via Adapter - API Adapter Service
+# ===============================================
+
+# Simple POST request
+post_execute_adapter_post_simple:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "POST"
+      url: "/users"
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+      body:
+        name: "John Doe"
+        email: "john@example.com"
+        age: 30
+        active: true
+  description: "Simple POST request via an adapter"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# POST request with complex data
+post_execute_adapter_post_complex:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "POST"
+      url: "/orders"
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+        "X-Request-ID": "req-12345"
+      body:
+        customer:
+          id: "cust-123"
+          name: "John Doe"
+          email: "john@example.com"
+        items:
+          - product_id: "prod-1"
+            quantity: 2
+            price: 29.99
+          - product_id: "prod-2"
+            quantity: 1
+            price: 49.99
+        shipping_address:
+          street: "Main Street 123"
+          city: "Berlin"
+          zip: "12345"
+          country: "Germany"
+        payment_method: "credit_card"
+        notes: "Please deliver before 6 PM"
+  description: "Complex POST request with nested data"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# POST request with file upload (simulation)
+post_execute_adapter_post_file_upload:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "POST"
+      url: "/upload"
+      headers:
+        Content-Type: "multipart/form-data"
+        Accept: "application/json"
+      body:
+        file: "base64-encoded-file-content"
+        filename: "document.pdf"
+        description: "Important document"
+  description: "POST request with file upload (simulation)"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601" 

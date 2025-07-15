@@ -1,0 +1,106 @@
+# GET Requests via Adapter - API Adapter Service
+# ==============================================
+
+# Simple GET request
+post_execute_adapter_get_simple:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "GET"
+      url: "/users"
+      headers:
+        Accept: "application/json"
+  description: "Simple GET request via an adapter"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# GET request with query parameters
+post_execute_adapter_get_with_query:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "GET"
+      url: "/users"
+      headers:
+        Accept: "application/json"
+        "User-Agent": "API-Adapter-Service/1.0.0"
+      query:
+        limit: "10"
+        offset: "0"
+        sort: "name"
+        filter: "active"
+  description: "GET request with query parameters via an adapter"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# GET request with path parameters
+post_execute_adapter_get_with_path:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "GET"
+      url: "/users/123"
+      headers:
+        Accept: "application/json"
+  description: "GET request with path parameters via an adapter"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# Complex GET request (Weather API)
+post_execute_adapter_get_complex:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "weather-api"
+  body:
+    request:
+      method: "GET"
+      url: "/current.json"
+      headers:
+        Accept: "application/json"
+      query:
+        q: "Berlin"
+        lang: "de"
+        aqi: "yes"
+      params:
+        api_key: "your-weather-api-key"
+  description: "Complex GET request with query parameters (Weather API)"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601" 

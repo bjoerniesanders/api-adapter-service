@@ -1,0 +1,57 @@
+# Health Checks - API Adapter Service
+# ===================================
+
+# General service health check
+get_health:
+  method: GET
+  url: "http://localhost:3000/api/v1/health"
+  headers:
+    Accept: "application/json"
+  description: "General service health check"
+  expected_response:
+    status: "healthy"
+    timestamp: "ISO-8601"
+    uptime: "number"
+    version: "1.0.0"
+    adapters: "object"
+
+# Detailed health check
+get_health_detailed:
+  method: GET
+  url: "http://localhost:3000/api/v1/health/detailed"
+  headers:
+    Accept: "application/json"
+  description: "Detailed service information with system metrics"
+  expected_response:
+    service:
+      status: "healthy"
+      uptime: "number"
+      version: "1.0.0"
+      environment: "string"
+    adapters: "array"
+    system:
+      memory: "object"
+      cpu: "object"
+      nodeVersion: "string"
+
+# Readiness check
+get_health_ready:
+  method: GET
+  url: "http://localhost:3000/api/v1/health/ready"
+  headers:
+    Accept: "application/json"
+  description: "Checks if the service is ready to process requests"
+  expected_response:
+    status: "ready"
+    timestamp: "ISO-8601"
+
+# Liveness check
+get_health_live:
+  method: GET
+  url: "http://localhost:3000/api/v1/health/live"
+  headers:
+    Accept: "application/json"
+  description: "Checks if the service is still running"
+  expected_response:
+    status: "alive"
+    timestamp: "ISO-8601" 

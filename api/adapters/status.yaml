@@ -1,0 +1,16 @@
+# Adapter Status - API Adapter Service
+# ===================================
+
+# Get adapter status
+get_adapter_status:
+  method: GET
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/status"
+  headers:
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  description: "Get status of a specific adapter"
+  expected_response:
+    adapterName: "string"
+    status: "available"
+    timestamp: "ISO-8601" 

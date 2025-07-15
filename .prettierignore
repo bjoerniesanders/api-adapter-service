@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build output
+dist/
+build/
+out/
+
+# Generated files
+generated/
+swagger.json
+openapi.json
+openapi.yaml
+openapi.yml
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env*
+
+# Coverage
+coverage/
+*.lcov
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Docker
+Dockerfile*
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE 

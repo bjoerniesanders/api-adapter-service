@@ -1,0 +1,45 @@
+# Update Configuration Completely - API Adapter Service
+# ====================================================
+
+# Update complete configuration
+put_config:
+  method: PUT
+  url: "http://localhost:3000/api/v1/config"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  body:
+    adapters:
+      example-api:
+        baseUrl: "https://api.example.com"
+        timeout: 30000
+        retries: 3
+        headers:
+          "User-Agent": "API-Adapter-Service/1.0.0"
+          "Accept": "application/json"
+      weather-api:
+        baseUrl: "https://api.weatherapi.com/v1"
+        timeout: 15000
+        retries: 2
+        headers:
+          "User-Agent": "API-Adapter-Service/1.0.0"
+    server:
+      port: 3000
+      host: "0.0.0.0"
+      cors: true
+      rateLimit:
+        windowMs: 900000
+        max: 100
+    logging:
+      level: "info"
+      format: "json"
+      file: "logs/app.log"
+    security:
+      helmet: true
+      rateLimit: true
+      cors: true
+  description: "Update complete service configuration"
+  expected_response:
+    success: "boolean"
+    message: "Configuration updated successfully"
+    timestamp: "ISO-8601" 

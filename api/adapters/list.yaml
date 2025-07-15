@@ -1,0 +1,13 @@
+# List Adapters - API Adapter Service
+# ===================================
+
+# List all available adapters
+get_adapters:
+  method: GET
+  url: "http://localhost:3000/api/v1/adapters"
+  headers:
+    Accept: "application/json"
+  description: "List of all configured API adapters"
+  expected_response:
+    adapters: "array"
+    count: "number" 

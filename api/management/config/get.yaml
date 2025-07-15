@@ -1,0 +1,16 @@
+# Get Configuration - API Adapter Service
+# ======================================
+
+# Get current configuration
+get_config:
+  method: GET
+  url: "http://localhost:3000/api/v1/config"
+  headers:
+    Accept: "application/json"
+  description: "Get current service configuration"
+  expected_response:
+    adapters: "object"
+    server: "object"
+    logging: "object"
+    security: "object"
+    timestamp: "ISO-8601" 

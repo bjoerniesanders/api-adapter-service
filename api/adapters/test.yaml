@@ -1,0 +1,18 @@
+# Test Adapter - API Adapter Service
+# ===================================
+
+# Test adapter
+get_adapter_test:
+  method: GET
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/test"
+  headers:
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  description: "Send test request to an adapter"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601" 

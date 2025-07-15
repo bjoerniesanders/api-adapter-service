@@ -1,0 +1,59 @@
+# PUT Requests via Adapter - API Adapter Service
+# =============================================
+
+# Simple PUT request
+post_execute_adapter_put_simple:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "PUT"
+      url: "/users/123"
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+      body:
+        name: "John Doe Updated"
+        email: "john.updated@example.com"
+        age: 31
+        active: true
+  description: "Simple PUT request via an adapter"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# PUT request with partial update
+post_execute_adapter_put_partial:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "PUT"
+      url: "/users/123"
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+        "If-Match": "etag-value"
+      body:
+        email: "new.email@example.com"
+        phone: "+1234567890"
+  description: "PUT request with partial update via an adapter"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601" 

@@ -1,0 +1,25 @@
+# Webhook registrieren - API Adapter Service
+# ==========================================
+
+# Webhook für Adapter-Events registrieren
+post_webhook_register:
+  method: POST
+  url: "http://localhost:3000/api/v1/webhooks"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  body:
+    name: "adapter-status-webhook"
+    url: "https://my-app.com/webhooks/adapter-status"
+    events: ["adapter.status.changed", "adapter.error"]
+    secret: "webhook-secret-key"
+    headers:
+      "X-Custom-Header": "webhook-value"
+    retry_count: 3
+    timeout: 5000
+  description: "Webhook für Adapter-Events registrieren"
+  expected_response:
+    success: "boolean"
+    webhook_id: "string"
+    message: "Webhook registered successfully"
+    timestamp: "ISO-8601" 

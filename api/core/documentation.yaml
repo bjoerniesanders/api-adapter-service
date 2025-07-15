@@ -1,0 +1,38 @@
+# API Documentation - API Adapter Service
+# ======================================
+
+# OpenAPI Schema as JSON
+get_openapi_json:
+  method: GET
+  url: "http://localhost:3000/api/v1/docs/openapi.json"
+  headers:
+    Accept: "application/json"
+  description: "OpenAPI specification as JSON"
+  expected_response:
+    openapi: "3.0.0"
+    info: "object"
+    paths: "object"
+    components: "object"
+
+# API Information
+get_api_info:
+  method: GET
+  url: "http://localhost:3000/api/v1/docs/info"
+  headers:
+    Accept: "application/json"
+  description: "General API information and endpoint list"
+  expected_response:
+    title: "API Adapter Service"
+    version: "1.0.0"
+    description: "string"
+    endpoints: "array"
+
+# API Examples
+get_api_examples:
+  method: GET
+  url: "http://localhost:3000/api/v1/docs/examples"
+  headers:
+    Accept: "application/json"
+  description: "Example requests for the API"
+  expected_response:
+    examples: "array" 

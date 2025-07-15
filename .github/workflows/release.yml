@@ -1,0 +1,129 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  NODE_VERSION: '24.x'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build application
+        run: npm run build
+        
+      - name: Run tests
+        run: npm test
+        
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Generate changelog from git commits
+          CHANGELOG=$(git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 HEAD^)..HEAD)
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ## What's Changed
+            
+            ${{ steps.changelog.outputs.changelog }}
+            
+            ## Installation
+            
+            ```bash
+            npm install
+            npm run build
+            npm start
+            ```
+            
+            ## Docker
+            
+            ```bash
+            docker pull your-registry/api-adapter-service:${{ github.ref_name }}
+            ```
+            
+            ## Breaking Changes
+            
+            None in this release.
+            
+            ## Contributors
+            
+            Thanks to all contributors!
+          draft: false
+          prerelease: false
+          
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist
+          asset_name: api-adapter-service-${{ github.ref_name }}.tar.gz
+          asset_content_type: application/gzip
+          
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            your-registry/api-adapter-service:${{ github.ref_name }}
+            your-registry/api-adapter-service:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+      - name: Update package.json version
+        run: |
+          # Update package.json version to match git tag
+          VERSION=${GITHUB_REF#refs/tags/}
+          npm version $VERSION --no-git-tag-version
+          
+      - name: Publish to npm (optional)
+        if: contains(github.ref, 'v') && !contains(github.ref, 'beta') && !contains(github.ref, 'alpha')
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  notify-release:
+    name: Notify Release
+    runs-on: ubuntu-latest
+    needs: release
+    if: always()
+    
+    steps:
+      - name: Notify team about release
+        run: |
+          echo "🎉 Release ${{ github.ref }} has been created!"
+          echo "📦 Docker image: your-registry/api-adapter-service:${{ github.ref_name }}"
+          echo "📚 Documentation: https://your-docs-url.com"
+          # Add notification logic (Slack, Teams, etc.) 

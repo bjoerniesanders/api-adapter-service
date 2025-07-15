@@ -1,0 +1,281 @@
+{
+  "info": {
+    "name": "API Adapter Service",
+    "description": "Collection for the API Adapter Service with all available endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Get Health Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documentation",
+      "item": [
+        {
+          "name": "Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/docs",
+              "host": ["{{baseUrl}}"],
+              "path": ["docs"]
+            }
+          }
+        },
+        {
+          "name": "OpenAPI JSON",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/docs/json",
+              "host": ["{{baseUrl}}"],
+              "path": ["docs", "json"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Adapters",
+      "item": [
+        {
+          "name": "List Available Adapters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/adapters",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "adapters"]
+            }
+          }
+        },
+        {
+          "name": "Get Adapter Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/adapters/example-api/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "adapters", "example-api", "status"]
+            }
+          }
+        },
+        {
+          "name": "Test Adapter Connection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"adapterName\": \"example-api\",\n  \"request\": {\n    \"method\": \"GET\",\n    \"url\": \"/users\",\n    \"headers\": {\n      \"Accept\": \"application/json\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/adapters/example-api/test",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "adapters", "example-api", "test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Adapter Execute",
+      "item": [
+        {
+          "name": "GET Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"adapterName\": \"example-api\",\n  \"request\": {\n    \"method\": \"GET\",\n    \"url\": \"/users\",\n    \"headers\": {\n      \"Accept\": \"application/json\"\n    },\n    \"params\": {\n      \"limit\": \"10\",\n      \"page\": \"1\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/adapters/example-api/execute",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "adapters", "example-api", "execute"]
+            }
+          }
+        },
+        {
+          "name": "POST Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"adapterName\": \"example-api\",\n  \"request\": {\n    \"method\": \"POST\",\n    \"url\": \"/users\",\n    \"headers\": {\n      \"Accept\": \"application/json\",\n      \"Content-Type\": \"application/json\"\n    },\n    \"body\": {\n      \"name\": \"John Doe\",\n      \"email\": \"john@example.com\",\n      \"role\": \"user\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/adapters/example-api/execute",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "adapters", "example-api", "execute"]
+            }
+          }
+        },
+        {
+          "name": "PUT Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"adapterName\": \"example-api\",\n  \"request\": {\n    \"method\": \"PUT\",\n    \"url\": \"/users/123\",\n    \"headers\": {\n      \"Accept\": \"application/json\",\n      \"Content-Type\": \"application/json\"\n    },\n    \"body\": {\n      \"name\": \"John Doe Updated\",\n      \"email\": \"john.updated@example.com\",\n      \"role\": \"admin\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/adapters/example-api/execute",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "adapters", "example-api", "execute"]
+            }
+          }
+        },
+        {
+          "name": "PATCH Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"adapterName\": \"example-api\",\n  \"request\": {\n    \"method\": \"PATCH\",\n    \"url\": \"/users/123\",\n    \"headers\": {\n      \"Accept\": \"application/json\",\n      \"Content-Type\": \"application/json\"\n    },\n    \"body\": {\n      \"role\": \"moderator\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/adapters/example-api/execute",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "adapters", "example-api", "execute"]
+            }
+          }
+        },
+        {
+          "name": "DELETE Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"adapterName\": \"example-api\",\n  \"request\": {\n    \"method\": \"DELETE\",\n    \"url\": \"/users/123\",\n    \"headers\": {\n      \"Accept\": \"application/json\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/adapters/example-api/execute",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "adapters", "example-api", "execute"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Management",
+      "item": [
+        {
+          "name": "Get Adapter Configuration",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/management/config",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "management", "config"]
+            }
+          }
+        },
+        {
+          "name": "Update Adapter Configuration",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"example-api\": {\n    \"name\": \"example-api\",\n    \"baseUrl\": \"https://api.example.com\",\n    \"timeout\": 30000,\n    \"headers\": {\n      \"Authorization\": \"Bearer YOUR_TOKEN_HERE\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/management/config",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "management", "config"]
+            }
+          }
+        },
+        {
+          "name": "Patch Adapter Configuration",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"example-api\": {\n    \"timeout\": 60000\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/management/config",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "management", "config"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+} 

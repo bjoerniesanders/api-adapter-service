@@ -1,0 +1,91 @@
+# PATCH Requests via Adapter - API Adapter Service
+# ===============================================
+
+# Simple PATCH request
+post_execute_adapter_patch_simple:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "PATCH"
+      url: "/users/123"
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+      body:
+        email: "john.new@example.com"
+        age: 32
+  description: "Simple PATCH request via an adapter"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# PATCH request with nested data
+post_execute_adapter_patch_nested:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "PATCH"
+      url: "/users/123"
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+      body:
+        profile:
+          bio: "Senior Software Developer"
+          location: "Hamburg"
+        preferences:
+          newsletter: false
+          language: "en"
+  description: "PATCH request with nested objects"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601"
+
+# PATCH request with array updates
+post_execute_adapter_patch_array:
+  method: POST
+  url: "http://localhost:3000/api/v1/adapters/{adapterName}/execute"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  path_params:
+    adapterName: "example-api"
+  body:
+    request:
+      method: "PATCH"
+      url: "/users/123"
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+      body:
+        tags: ["developer", "senior", "typescript"]
+        skills:
+          - name: "TypeScript"
+            level: "expert"
+          - name: "Node.js"
+            level: "advanced"
+  description: "PATCH request with array updates"
+  expected_response:
+    success: "boolean"
+    data: "object"
+    statusCode: "number"
+    adapterName: "string"
+    timestamp: "ISO-8601" 

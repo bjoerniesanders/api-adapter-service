@@ -1,0 +1,26 @@
+# Update Configuration Partially - API Adapter Service
+# ===================================================
+
+# Update partial configuration
+patch_config:
+  method: PATCH
+  url: "http://localhost:3000/api/v1/config"
+  headers:
+    Content-Type: "application/json"
+    Accept: "application/json"
+  body:
+    adapters:
+      example-api:
+        timeout: 45000
+        retries: 5
+    logging:
+      level: "debug"
+    security:
+      rateLimit:
+        max: 200
+  description: "Update partial service configuration"
+  expected_response:
+    success: "boolean"
+    message: "Configuration partially updated"
+    updated_fields: "array"
+    timestamp: "ISO-8601" 
