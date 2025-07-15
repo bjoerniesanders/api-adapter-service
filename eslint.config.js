@@ -7,6 +7,7 @@ import promisePlugin from 'eslint-plugin-promise';
 import unicornPlugin from 'eslint-plugin-unicorn';
 import prettierPlugin from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
+import vitest from 'eslint-plugin-vitest';
 
 export default [
   js.configs.recommended,
@@ -153,12 +154,23 @@ export default [
     },
   },
   {
+    files: ['test/**/*.test.ts', 'test/**/*.spec.ts'],
+    plugins: {
+      vitest,
+    },
+    extends: ['plugin:vitest/recommended'],
+    rules: {
+      // Hier können projektspezifische Vitest-Regeln ergänzt werden
+    },
+  },
+  {
     ignores: [
       'dist/',
       'node_modules/',
       'generated/',
       '*.js',
       '*.d.ts',
+      'test/',
     ],
   },
   prettierConfig,

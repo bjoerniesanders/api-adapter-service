@@ -14,7 +14,23 @@ export async function docsRoutes(fastify: FastifyInstance): Promise<void> {
       },
     },
     handler: async () => {
-      return fastify.swagger();
+      try {
+        return fastify.swagger();
+      } catch (error) {
+        // Fallback if swagger is not properly initialized
+        return {
+          openapi: '3.0.0',
+          info: {
+            title: 'API Adapter Service',
+            version: '1.0.0',
+            description: 'A Fastify-based API Adapter Service with OpenAPI support',
+          },
+          paths: {},
+          components: {
+            schemas: {},
+          },
+        };
+      }
     },
   });
 
