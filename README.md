@@ -304,12 +304,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Node.js 24** for native TypeScript support
 - **OpenAPI** for API documentation standards
 
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/your-username/api-adapter-service/issues)
-- **Documentation**: [API Docs](http://localhost:4000/docs)
-- **Email**: support@example.com
-
 ---
 
 **Made with ❤️ using Node.js 24, TypeScript, and Fastify** 
