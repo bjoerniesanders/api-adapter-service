@@ -7,7 +7,8 @@ export async function healthRoutes(
   fastify: FastifyInstance,
   options: FastifyPluginOptions,
 ): Promise<void> {
-  const adapterService = new AdapterService(options['adapterConfigs'] ?? {});
+  const adapterService =
+    options['adapterService'] ?? new AdapterService(options['adapterConfigs'] ?? {});
   const startTime = Date.now();
 
   // Health Check Endpoint

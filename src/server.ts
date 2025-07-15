@@ -2,6 +2,7 @@ import Fastify, { FastifyInstance } from 'fastify';
 
 import { config, adapterConfigs } from './config';
 import { routes } from './routes';
+import { AdapterService } from './services/adapter';
 import { logger } from './services/logger';
 
 async function buildServer(): Promise<FastifyInstance> {
@@ -36,8 +37,11 @@ async function buildServer(): Promise<FastifyInstance> {
   // Kompression
   await fastify.register(import('@fastify/compress'));
 
-  // Register routes with adapter configuration
-  await fastify.register(routes, { adapterConfigs });
+  // Create adapter service instance
+  const adapterService = new AdapterService(adapterConfigs);
+
+  // Register routes with adapter configuration and service
+  await fastify.register(routes, { adapterConfigs, adapterService });
 
   return fastify;
 }

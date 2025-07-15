@@ -7,7 +7,7 @@ export async function adapterRoutes(
   fastify: FastifyInstance,
   options: FastifyPluginOptions,
 ): Promise<void> {
-  const adapterService = new AdapterService(options['adapterConfigs']);
+  const adapterService = options['adapterService'] ?? new AdapterService(options['adapterConfigs']);
 
   // Get all available adapters
   fastify.get('/', {

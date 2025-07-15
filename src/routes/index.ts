@@ -3,9 +3,11 @@ import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import { config } from '../config';
 
 import { adapterRoutes } from './adapter';
+import { cacheRoutes } from './cache';
 import { docsRoutes } from './docs';
 import { healthRoutes } from './health';
 import { managementRoutes } from './management';
+import { retryRoutes } from './retry';
 
 export async function routes(
   fastify: FastifyInstance,
@@ -99,6 +101,14 @@ export async function routes(
   await fastify.register(managementRoutes, {
     prefix: '/api/v1/management',
     adapterConfigs: options.adapterConfigs,
+  });
+  await fastify.register(cacheRoutes, {
+    prefix: '/api/v1/cache',
+    adapterService: options.adapterService,
+  });
+  await fastify.register(retryRoutes, {
+    prefix: '/api/v1/retry',
+    adapterService: options.adapterService,
   });
   await fastify.register(docsRoutes, {
     prefix: '/docs',

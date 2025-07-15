@@ -14,6 +14,11 @@ export const config = {
     level: process.env.LOG_LEVEL ?? 'info',
     format: process.env.LOG_FORMAT ?? 'json',
   },
+  cache: {
+    enabled: process.env.CACHE_ENABLED !== 'false',
+    ttl: parseInt(process.env.CACHE_TTL ?? '300000', 10), // 5 minutes default
+    maxSize: parseInt(process.env.CACHE_MAX_SIZE ?? '1000', 10),
+  },
   cors: {
     origin: process.env.CORS_ORIGIN ?? '*',
     credentials: process.env.CORS_CREDENTIALS === 'true',
