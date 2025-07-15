@@ -16,7 +16,7 @@ export async function docsRoutes(fastify: FastifyInstance): Promise<void> {
     handler: async () => {
       try {
         return fastify.swagger();
-      } catch (error) {
+      } catch {
         // Fallback if swagger is not properly initialized
         return {
           openapi: '3.0.0',
