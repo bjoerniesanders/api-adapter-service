@@ -39,8 +39,11 @@ A modern, high-performance API adapter service built with **Fastify** and **Type
 
 - **Node.js 24+** (for native TypeScript support)
 - **npm** or **yarn**
+- **Docker** (optional, for containerized deployment)
 
 ### Installation
+
+#### Option 1: Local Development
 
 1. **Clone the repository**
    ```bash
@@ -64,7 +67,33 @@ A modern, high-performance API adapter service built with **Fastify** and **Type
    npm run dev
    ```
 
-The service will be available at `http://localhost:3000` (or the port specified in your .env file)
+#### Option 2: Docker (Recommended for Production)
+
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd api-adapter-service
+   ```
+
+2. **Build and run with Docker Compose**
+   ```bash
+   # Production
+   docker-compose up -d
+   
+   # Development (with hot reload)
+   docker-compose --profile dev up -d
+   ```
+
+3. **Or build manually**
+   ```bash
+   # Build Docker image
+   ./scripts/docker-build.sh
+   
+   # Run container
+   docker run -d --name api-adapter-service -p 4000:4000 --env-file .env api-adapter-service:latest
+   ```
+
+The service will be available at `http://localhost:4000` (or the port specified in your .env file)
 
 ## 📖 API Documentation
 
@@ -145,6 +174,55 @@ export const adapterConfigs: Record<string, AdapterConfig> = {
   // Add more adapters here...
 };
 ```
+
+## 🐳 Docker
+
+### Quick Start with Docker
+
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Check service status
+docker-compose ps
+
+# View logs
+docker-compose logs -f api-adapter-service
+
+# Stop services
+docker-compose down
+```
+
+### Docker Scripts
+
+We provide convenient scripts for Docker operations:
+
+```bash
+# Build Docker image
+./scripts/docker-build.sh
+
+# Build with custom tag
+./scripts/docker-build.sh -t v1.0.0
+
+# Build without cache
+./scripts/docker-build.sh --no-cache
+
+# Docker Compose operations
+./scripts/docker-compose.sh up -d
+./scripts/docker-compose.sh logs
+./scripts/docker-compose.sh health
+./scripts/docker-compose.sh shell -s api-adapter-service
+```
+
+### Docker Features
+
+- **Multi-stage Build**: Optimized image size with separate build and production stages
+- **Security**: Non-root user, minimal Alpine Linux base image
+- **Health Checks**: Automatic health monitoring
+- **Environment Support**: Development and production configurations
+- **Hot Reload**: Development mode with volume mounting for code changes
+
+For detailed Docker documentation, see [docs/DOCKER.md](docs/DOCKER.md).
 
 ## 🧪 Testing
 
