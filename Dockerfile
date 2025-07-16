@@ -54,7 +54,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY yarn.lock* ./
 
-# Install only production dependencies
+# Install production dependencies only
 RUN if [ -f yarn.lock ]; then \
         yarn install --frozen-lockfile --production=true && \
         yarn cache clean; \
@@ -63,11 +63,11 @@ RUN if [ -f yarn.lock ]; then \
         npm cache clean --force; \
     fi
 
-# Copy built application from Build Stage
+# Copy built application from build stage
 COPY --from=build --chown=nodejs:nodejs /app/dist ./dist
 
-# Copy configuration files
-COPY --chown=nodejs:nodejs .env .env
+# Copy configuration files (only if they exist)
+COPY --chown=nodejs:nodejs .env* ./
 
 # Set environment variables for Node.js optimization
 ENV NODE_ENV=production
@@ -79,12 +79,10 @@ USER nodejs
 # Expose port
 EXPOSE 4000
 
-# Health Check with improved reliability
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD node -e "require('http').get('http://localhost:4000/api/v1/health/live', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"
 
-# Use dumb-init for proper signal handling
+# Start application with dumb-init for proper signal handling
 ENTRYPOINT ["dumb-init", "--"]
-
-# Start application
 CMD ["node", "dist/server.js"] 
