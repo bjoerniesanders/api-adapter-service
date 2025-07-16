@@ -62,23 +62,32 @@ test_endpoint() {
 }
 
 # Try to find the server on different ports
-SERVER_PORT=${PORT:-3000}
-PORTS_TO_TRY=($SERVER_PORT 3000 4000 8080 5000)
+SERVER_PORT=${PORT:-4000}
+CI_MODE=${CI:-false}
 
-SERVER_FOUND=false
-for port in "${PORTS_TO_TRY[@]}"; do
-    if curl -s http://localhost:$port/api/v1/health > /dev/null 2>&1; then
-        BASE_URL="http://localhost:$port"
-        SERVER_FOUND=true
-        print_status "success" "Server found on port $port"
-        break
+if [ "$CI_MODE" = "true" ]; then
+    # In CI, use specific port
+    BASE_URL="http://localhost:$SERVER_PORT"
+    print_status "info" "CI mode: Using port $SERVER_PORT"
+else
+    # In development, try multiple ports
+    PORTS_TO_TRY=($SERVER_PORT 3000 4000 8080 5000)
+    
+    SERVER_FOUND=false
+    for port in "${PORTS_TO_TRY[@]}"; do
+        if curl -s http://localhost:$port/api/v1/health > /dev/null 2>&1; then
+            BASE_URL="http://localhost:$port"
+            SERVER_FOUND=true
+            print_status "success" "Server found on port $port"
+            break
+        fi
+    done
+    
+    if [ "$SERVER_FOUND" = false ]; then
+        print_status "error" "Server is not running on any of the tried ports: ${PORTS_TO_TRY[*]}"
+        print_status "info" "Start the server first with 'npm run dev'"
+        exit 1
     fi
-done
-
-if [ "$SERVER_FOUND" = false ]; then
-    print_status "error" "Server is not running on any of the tried ports: ${PORTS_TO_TRY[*]}"
-    print_status "info" "Start the server first with 'npm run dev'"
-    exit 1
 fi
 
 echo -e "\n${GREEN}🚀 Testing API Adapter Service${NC}"

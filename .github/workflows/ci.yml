@@ -97,28 +97,52 @@ jobs:
         
       - name: Start server for integration tests
         run: |
+          # Kill any existing processes on port 4000
+          pkill -f "node.*server" || true
+          sleep 2
+          
+          # Start server in background with specific port
           npm start &
-          sleep 10
+          SERVER_PID=$!
+          
+          # Wait for server to be ready
+          echo "Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:4000/api/v1/health > /dev/null 2>&1; then
+              echo "Server is ready!"
+              break
+            fi
+            echo "Attempt $i: Server not ready yet..."
+            sleep 2
+          done
+          
+          # Store PID for cleanup
+          echo $SERVER_PID > server.pid
         env:
           NODE_ENV: test
-          PORT: 3000
+          PORT: 4000
+          HOST: localhost
+          CACHE_ENABLED: true
+          CORS_ORIGIN: "*"
+          RATE_LIMIT_MAX: 1000
+          DEFAULT_TIMEOUT: 10000
           
       - name: Run API integration tests
         run: |
-          # Run Vitest integration tests instead of shell scripts
+          # Run Vitest integration tests
           npm run test:run -- test/integration/
         env:
           NODE_ENV: test
+          API_BASE_URL: http://localhost:4000
           
-      - name: Run additional API tests (if shell scripts exist)
+      - name: Cleanup server
+        if: always()
         run: |
-          if [ -f "test-api.sh" ]; then
-            chmod +x test-api.sh
-            ./test-api.sh
+          if [ -f server.pid ]; then
+            kill $(cat server.pid) || true
+            rm server.pid
           fi
-        env:
-          API_BASE_URL: http://localhost:3000
-          continue-on-error: true
+          pkill -f "node.*server" || true
 
   # Security Scan
   security:
@@ -148,6 +172,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
+        continue-on-error: true
 
   # Build and Package
   build:
@@ -278,11 +303,31 @@ jobs:
         
       - name: Start server
         run: |
+          # Kill any existing processes on port 4000
+          pkill -f "node.*server" || true
+          sleep 2
+          
+          # Start server in background
           npm start &
-          sleep 10
+          SERVER_PID=$!
+          
+          # Wait for server to be ready
+          echo "Waiting for server to start..."
+          for i in {1..30}; do
+            if curl -s http://localhost:4000/api/v1/health > /dev/null 2>&1; then
+              echo "Server is ready!"
+              break
+            fi
+            echo "Attempt $i: Server not ready yet..."
+            sleep 2
+          done
+          
+          # Store PID for cleanup
+          echo $SERVER_PID > server.pid
         env:
           NODE_ENV: test
-          PORT: 3000
+          PORT: 4000
+          HOST: localhost
           
       - name: Run performance tests
         run: |
@@ -291,6 +336,15 @@ jobs:
           echo "Running performance tests..."
           npm run test:performance || echo "Performance tests not configured"
         continue-on-error: true
+        
+      - name: Cleanup server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            kill $(cat server.pid) || true
+            rm server.pid
+          fi
+          pkill -f "node.*server" || true
 
   # Documentation Generation
   docs:
